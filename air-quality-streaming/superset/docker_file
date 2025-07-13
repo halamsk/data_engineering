@@ -1,9 +1,13 @@
 # superset/Dockerfile
 FROM apache/superset:3.0.0
 
+
 USER root
-RUN pip install 'trino[sqlalchemy]'
+RUN pip install psycopg2-binary
 COPY init.sh /app/init.sh
 RUN chmod +x /app/init.sh
+COPY superset_config.py /app/pythonpath/superset_config.py
+RUN chmod 644 /app/pythonpath/superset_config.py
 USER superset
+
 ENTRYPOINT ["/app/init.sh"]

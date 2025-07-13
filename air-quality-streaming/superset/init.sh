@@ -9,11 +9,11 @@ superset db upgrade
 
 # Create admin user only if not exists
 superset fab create-admin \
-    --username admin \
-    --firstname Superset \
-    --lastname Admin \
-    --email admin@superset.com \
-    --password admin || true
+    --username "${ADMIN_USERNAME:-admin}" \
+    --firstname "${ADMIN_FIRST_NAME:-Superset}" \
+    --lastname "${ADMIN_LAST_NAME:-Admin}" \
+    --email "${ADMIN_EMAIL:-admin@superset.com}" \
+    --password "${ADMIN_PASSWORD:-admin}" || true
 
 superset init
 

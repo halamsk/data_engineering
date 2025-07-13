@@ -58,7 +58,7 @@ services:
     command: server --console-address ":9001" /data
 
   trino:
-    image: trinodb/trino:443
+    image: trinodb/trino:411
     ports:
       - "8080:8080"
     environment:
@@ -69,6 +69,18 @@ services:
       - minio
     volumes:
       - ./trino/catalog:/etc/trino/catalog
+
+
+  superset-db:
+    image: postgres:13
+    container_name: superset-db
+    environment:
+      POSTGRES_DB: superset
+      POSTGRES_USER: superset
+      POSTGRES_PASSWORD: superset
+    volumes:
+      - superset-db-data:/var/lib/postgresql/data
+
   superset:
     build:
         context: ./superset
@@ -78,18 +90,23 @@ services:
     ports:
       - "8089:8088"
     environment:
+      - PYTHONPATH=/app/pythonpath
       - SUPERSET_SECRET_KEY=supersecret
       - ADMIN_USERNAME=admin
       - ADMIN_PASSWORD=admin
       - ADMIN_FIRST_NAME=admin
       - ADMIN_LAST_NAME=admin
       - ADMIN_EMAIL=admin@example.com
+      - SQLALCHEMY_DATABASE_URI=postgresql+psycopg2://superset:superset@superset-db:5432/superset
     volumes:
       - superset_home:/app/superset_home
+
     entrypoint: ["/bin/bash", "/app/init.sh"]
     depends_on:
+      - superset-db
       - minio
 
 volumes:
   minioaq-data:
   superset_home:
+  superset-db-data:
