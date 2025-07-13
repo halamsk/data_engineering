@@ -1,0 +1,9 @@
+# superset/Dockerfile
+FROM apache/superset:3.0.0
+
+USER root
+RUN pip install 'trino[sqlalchemy]'
+COPY init.sh /app/init.sh
+RUN chmod +x /app/init.sh
+USER superset
+ENTRYPOINT ["/app/init.sh"]
