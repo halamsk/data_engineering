@@ -20,6 +20,30 @@ services:
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=CLIENT
     depends_on:
       - zookeeper
+
+  hive-metastore-db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: metastore
+      POSTGRES_USER: hive
+      POSTGRES_PASSWORD: hive
+    volumes:
+      - metastore-db:/var/lib/postgresql/data
+
+  hive-metastore:
+    image: bitsondatadev/hive-metastore:3.1.2
+    environment:
+      - HIVE_DB=metastore
+      - HIVE_USER=hive
+      - HIVE_PASSWORD=hive
+      - HIVE_DB_HOST=hive-metastore-db
+      - HIVE_DB_PORT=5432
+      - METASTORE_DB_TYPE=postgres
+    depends_on:
+      - hive-metastore-db
+    ports:
+      - "9083:9083"  # Metastore thrift port
+
   spark-master:
     image: bitnami/spark:3.5.0-debian-11-r0
     container_name: spark-master
@@ -110,3 +134,4 @@ volumes:
   minioaq-data:
   superset_home:
   superset-db-data:
+  metastore-db:
