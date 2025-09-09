@@ -1,3 +1,4 @@
+# This is a mock from perplexity
 # <!-- Here is a **mock Netflix Data Engineering coding interview question**, modeled closely on recent screens:
 
 # ***
